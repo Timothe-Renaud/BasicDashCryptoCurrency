@@ -22,10 +22,10 @@ export default function Home(props) {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Coinmarketcap clone</title>
+        <title>Coinmarketcap</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <h1>Coinmarketcap clone</h1>
+      <h1>My Coin Marketcap Dash board</h1>
         <div className={styles.row}>
           <table className="table">
             <thead>

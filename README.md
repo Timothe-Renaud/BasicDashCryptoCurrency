@@ -1,6 +1,14 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+---
+title: Quick Crypto Currency App
+author: Langlois - TEston Timothé - Renaud
+date: 08 - feb - 2021
+---
+## Utilité:, 
+Keep an eye on your investments by using this web portal. 
+BIIIIIG S/O for GeckoCoin-API for providing datas.
 
 ## Getting Started
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 First, run the development server:
 

@@ -1,65 +1,82 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
+import CoinGecko from 'coingecko-api';
+const coinGeckoClient = new CoinGecko();
 
-export default function Home() {
+export default function Home(props) {
+  const { data } = props.result;
+
+  const formatPercent = number => 
+    `${new Number(number).toFixed(2)}%`
+
+  const formatDollar = (number, maximumSignificantDigits) =>
+    new Intl.NumberFormat(
+      'en-US', 
+      { 
+        style: 'currency', 
+        currency: 'USD',
+        maximumSignificantDigits
+      })
+      .format(number);
+
   return (
     <div className={styles.container}>
       <Head>
-        <title>Create Next App</title>
+        <title>Coinmarketcap clone</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+      <h1>Coinmarketcap clone</h1>
+        <div className={styles.row}>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th>24H Change</th>
+                <th>Price</th>
+                <th>Market cap</th>
+                <th>btn marker</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map(coin => (
+                <tr key={coin.id}>                  
+                  <td>
+                    <img 
+                      src={coin.image} 
+                      style={{width: 25, height: 25, marginRight: 10}} 
+                    />
+                    {coin.symbol.toUpperCase()}
+                  </td>
+                
+                <td> 
+                    <span
+                      className={coin.price_change_percentage_24h > 0 ? (
+                        'text-success' 
+                      ) : 'text-danger'}
+                    >
+                    {formatPercent(coin.price_change_percentage_24h)}
+                    </span>
+                  </td>
+                  <td>{formatDollar(coin.current_price, 20)}</td>
+                  <td>{formatDollar(coin.market_cap, 12)}</td>
+                  <td><button class="btn btn-dark"> Infos </button></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
+      </div>
   )
+}
+
+export async function getServerSideProps(context) {
+  const params = {
+    order: CoinGecko.ORDER.MARKET_CAP_DESC
+  };
+  const result = await coinGeckoClient.coins.markets({params});
+  return {
+    props: {
+      result
+    },
+  }
 }
